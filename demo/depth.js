@@ -17,6 +17,7 @@ Depth.getStreams = async function () {
     const group = device.label.slice(device.label.length - 10, device.label.length - 1);
     console.log('Group: ', group);
 
+    // Load the device stream for the realsense device.
     const constraints = {
       video: { deviceId: { exact: device.deviceId } }
     };
@@ -33,8 +34,6 @@ Depth.getStreams = async function () {
       result[group]["depth"] = deviceStream;
     }
   }
-
-  console.log("Got results: ", result);
   return result;
 }
 
