@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>HoloTable</title>
+  <meta charset="utf-8">
+
+  <style>
+    div.select {
+      display: inline-block;
+      margin: 0 0 1em 0;
+    }
+
+    p.small {
+      font-size: 0.7em;
+    }
+
+    label {
+      width: 12em;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="select">
+    <label for="rgb">RGB source: </label><select id="rgb"></select>
+  </div>
+
+  <div class="select">
+    <label for="depth">Depth source: </label><select id="depth"></select>
+  </div>
+
+  <video id="rgb" autoplay playsinline></video>
+  <video id="depth" autoplay playsinline></video>
+
+  <div id="errorMsg"></div>
+</body>
+
+<script>
+  const constraints = window.constraints = {
+    audio: false,
+    video: true
+  };
+
+  const rgbElem = document.querySelector('video#rgb');
+  const depthElem = document.querySelector('video#depth');
+  const rgbSelect = document.querySelector('select#rgb');
+  const depthSelect = document.querySelector('select#depth');
+  const selectors = [rgbSelect, depthSelect];
+
+  function gotDevices(deviceInfos) {
+    const values = selectors.map(select => select.value);
+    selectors.forEach(select => {
+      while (select.firstChild) {
+        select.removeChild(select.firstChild);
+      }
+    });
+    for (let i = 0; i != deviceInfos.length; ++i) {
+      const deviceInfo = deviceInfos[i];
+      if (deviceInfo.kind = 'videoinput') {
+        const rgbOption = document.createElement('option');
+        const depthOption = document.createElement('option');
+        rgbOption.value = deviceInfo.deviceId;
+        depthOption.value = deviceInfo.deviceId;
+        rgbOption.text = deviceInfo.label || `camera ${rgbSelect.length + 1}`;
+        depthOption.text = deviceInfo.label || `camera ${depthSelect.length + 1}`;
+        rgbSelect.appendChild(rgbOption);
+        depthSelect.appendChild(depthOption);
+        console.log("Got device: ", deviceInfo);
+      } else {
+        console.log('Some other kind of source/device: ', deviceInfo);
+      }
+    }
+    selectors.forEach((select, selectorIndex) => {
+      if (Array.prototype.slice.call(select.childNodes).some(n => n.value === values[selectorIndex])) {
+        select.value = values[selector.Index];
+      }
+    });
+  }
+
+  navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
+
+  function gotRgbStream(stream) {
+    window.rgbStream = stream;
+    rgbElem.srcObject = stream;
+    return navigator.mediaDevices.enumerateDevices();
+  }
+
+  function gotDepthStream(stream) {
+    window.depthStream = stream;
+    depthElem.srcObject = stream;
+    return navigator.mediaDevices.enumerateDevices();
+  }
+
+  function handleError(error) {
+    console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
+  }
+
+  function startRgb() {
+    if (window.rgbStream) {
+      window.rgbStream.getTracks().forEach(track => {
+        track.stop();
+      });
+    }
+    const videoSource = rgbSelect.value;
+    const constraints = {
+      video: { deviceId: videoSource ? { exact: videoSource } : undefined }
+    };
+    navigator.mediaDevices.getUserMedia(constraints).then(gotRgbStream).then(gotDevices).catch(handleError);
+  }
+
+  function startDepth() {
+    if (window.depthStream) {
+      window.depthStream.getTracks().forEach(track => {
+        track.stop();
+      });
+    }
+    const videoSource = depthSelect.value;
+    const constraints = {
+      video: { deviceId: videoSource ? { exact: videoSource } : undefined }
+    };
+    navigator.mediaDevices.getUserMedia(constraints).then(gotDepthStream).then(gotDevices).catch(handleError);
+  }
+
+  rgbSelect.onchange = startRgb;
+  depthSelect.onchange = startDepth;
+
+  startRgb();
+  startDepth();
+
+</script>
+
+</html>
