@@ -38,12 +38,12 @@
 
     for (const [group, struct] of Object.entries(streams)) {
       let rgbVideo = document.createElement("video");
-      rgbVideo.setAttribute("autoplay").setAttribute("playsinline");
+      rgbVideo.setAttribute("autoplay", "").setAttribute("playsinline", "");
       rgbVideo.srcObject = struct["rgb"];
       videoDiv.appendChild(rgbVideo);
 
       let depthVideo = document.createElement("video");
-      depthVideo.setAttribute("autoplay").setAttribute("playsinline");
+      depthVideo.setAttribute("autoplay", "").setAttribute("playsinline", "");
       depthVideo.srcObject = struct["depth"];
       videoDiv.appendChild(depthVideo);
     }
