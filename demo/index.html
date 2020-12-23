@@ -64,8 +64,8 @@
         const depthOption = document.createElement('option');
         rgbOption.value = deviceInfo.deviceId;
         depthOption.value = deviceInfo.deviceId;
-        rgbOption.text = deviceInfo.label || `camera ${videoSelect1.length + 1}`;
-        depthOption.text = deviceInfo.label || `camera ${videoSelect2.length + 1}`;
+        rgbOption.text = deviceInfo.label || `camera ${rgbSelect.length + 1}`;
+        depthOption.text = deviceInfo.label || `camera ${depthSelect.length + 1}`;
         rgbSelect.appendChild(rgbOption);
         depthSelect.appendChild(depthOption);
         console.log("Got device: ", deviceInfo);
