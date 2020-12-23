@@ -1,6 +1,6 @@
 
 
-Depth.getStreams = async function() {
+Depth.getStreams = async function () {
   // TODO: Check browser versions.
 
   // TODO: Catch exceptions
@@ -37,3 +37,5 @@ Depth.getStreams = async function() {
   console.log("Got results: ", result);
   return result;
 }
+
+function Depth() { }
